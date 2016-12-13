@@ -1,0 +1,37 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container" align="center">
+
+    <br/><br/><br/><br/><br/><br/>
+
+        <div style="text-align: left; padding-left: 3%; width: 400px;"> <!-- Log in zone -->
+        <form class="form-inline" name="RegistrationForm" action="registration" method="post">
+        {% csrf_token %}
+
+            {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            {% endif %}
+
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Registration</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group has-success">
+                        <input type="text" id="username" name="username" placeholder="Username" class="form-control"><br/><br/>
+                        <input type="password" name="password" id="password" placeholder="Password" class="form-control"><br/><br/>
+                        <input type="email" name="email" id="email" placeholder="Email" class="form-control"><br/><br/>
+                        <button type="submit" class="btn btn-success btn-xs">Register</button><br/><br/>
+                    </div>
+                    <h5 class="text-info">{{ response }}</h5>
+                </div>
+            </div>
+
+        </form>
+        </div>
+
+</div>
+
+{% endblock %}
