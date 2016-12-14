@@ -12,10 +12,12 @@
 
   {% if debug %}
     <link rel="stylesheet/less" href="{% static 'less/app.less' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}"/>
     <script type="text/javascript" src="{% static 'js/libs/less.min.js' %}"></script>
   {% else %}
     {% compress css %}
     <link rel="stylesheet" type="text/less" media="all" href="{% static 'less/app.less' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}"/>
     {% endcompress %}
   {% endif %}
 
