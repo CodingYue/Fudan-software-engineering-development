@@ -1,0 +1,7 @@
+web:
+  build: .
+  command: sh docker-start.sh
+  volumes:
+    - .:/code
+  ports:
+    - "8000:8000"
