@@ -1,110 +1,31 @@
 """Views for the base app"""
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.utils.html import escape
-from django.contrib.auth.models import User
-from .forms import UploadImageForm
-from .models import Image
+from .message import Message
+import service
 
 def home(request):
-    """ Default view for the root """
-    if request.user.is_authenticated():
-    	isLogged = True
-    else:
-    	isLogged = False
-    return render(request, 'base/home.html', {'isLogged' : isLogged})
+    response = service.handle_authenticate(request)
+    return render(request, 'base/home.html', response)
 
 def login_user(request):
-
-	logout(request)
-	if request.POST:
-
-		#print 'views.login_user : Login!'
-		username = escape(request.POST['username'])
-		password = escape(request.POST['password'])
-
-		user = authenticate(username = username, password = password)
-
-		isLogged = False
-
-		if user is not None:
-			if user.is_active:
-				login(request, user)
-				response = "You are logged in, and allowed to access any page of the website."
-				isLogged = True
-				return redirect("/", {'response' : response, 'isLogged' : isLogged})
-			else:
-				response = "Disabled account"
-				isLogged = False
-				return render(request, 'simulation/login.html', {'response' : response, 'isLogged' : isLogged})
-		else:
-			response = "Invalid username or password."
-			isLogged = False
-			return render(request, 'simulation/login.html', {'response' : response, 'isLogged' : isLogged})
+	response = service.handle_login(request)
+	if response["message"] == Message.SUCCESS:
+		return redirect("/", response)
 	else:
-		response = ''
-		isLogged = False
-		return render(request, 'simulation/login.html', {'response' : response, 'isLogged' : isLogged})
+		return render(request, 'simulation/login.html', response)
 
 def logout_user(request):
-	logout(request)
-	isLogged = False
-	text = """You are logged out"""
-	return redirect("/", {'text' : text, 'isLogged' : isLogged})
+	response = service.handle_logout(request)
+	return redirect("/", response)
 
 def registration_user(request):
-	logout(request)
-
-	isLogged = False
-	response = '';
-
-	if request.POST:
-		#print 'views.registration : Register!'
-		username = escape(request.POST['username'])
-		password = escape(request.POST['password'])
-		email = escape(request.POST['email'])
-
-		try:
-			user = User.objects.get(username=username)
-		except User.DoesNotExist:
-			user = None
-
-		if user is None:
-			response = 'registration success!'
-			user = User.objects.create_user(username, email, password)
-			user.save()
-			return redirect('/login', {'response' : response, 'isLogged' : isLogged})
-		else:
-			response = 'username already exists!'
-			return render(request, 'simulation/registration.html', {'response' : response, 'isLogged' : isLogged})
+	response = service.handle_registration(request)
+	if response["message"] == Message.SUCCESS:
+		return redirect('/login', response)
 	else:
-		response = ''
-		return render(request, 'simulation/registration.html', {'response' : response, 'isLogged' : isLogged})
+		return render(request, 'simulation/registration.html', response)
 
 def upload_images(request):
-	if request.user.is_authenticated():
-		isLogged = True
-	else:
-		isLogged = False
-
-	response = ""
-
-	if not isLogged:
-		response = "Log in at first, please"
-		return redirect("/", {"response" : response, "isLogged" : isLogged})
-
-	form = UploadImageForm()
-
-	if request.POST:
-		print "upload_image : uploading"
-		
-		form = UploadImageForm(request.POST, request.FILES)
-		if form.is_valid():
-			newImage = Image(file = request.FILES['file'])
-			newImage.save()
-			return render(request, 'simulation/upload_images.html', {'response' : response, 'isLogged' : isLogged, "form":form})
-		else:
-			form = UploadImageForm()
-
-	return render(request, 'simulation/upload_images.html', {'response' : response, 'isLogged' : isLogged, "form" : form})
+	response = service.handle_upload_images(request)
+	return render(request, 'simulation/upload_images.html', response)

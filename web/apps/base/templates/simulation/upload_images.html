@@ -9,12 +9,17 @@
         <div style="text-align: left; padding-left: 3%; width: 1000px;"> <!-- Log in zone -->
         <form class="form-inline" action="upload_images" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        \
+        
             <p>{{ form.non_field_errors }}</p>
-            <p>{{ form.file.label_tag }} {{ form.file.help_text }}</p>
+            <p>{{ form.file.label_tag }} {{ form.file.help_text }}</p><br/><br/>
             <p>
                 {{ form.file.errors }}
                 {{ form.file }}
+            </p>
+            <br/><br/>
+            <p>
+                {{ form.description.errors }}
+                {{ form.description }}
             </p>
             <button type="submit" class="btn btn-success btn-xs">Upload</button><br/><br/>
             <!---

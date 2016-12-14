@@ -1,4 +1,6 @@
 from django import forms
 
 class UploadImageForm(forms.Form):
-	file = forms.FileField(label='Select a file', help_text='max, 42 megabytes')
+	description = forms.CharField(widget = forms.Textarea)
+	file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
