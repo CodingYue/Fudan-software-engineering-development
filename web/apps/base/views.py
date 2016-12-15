@@ -5,7 +5,8 @@ from .message import Message
 import service
 
 def home(request):
-    response = service.handle_authenticate(request)
+    response = service.handle_list_images(request)
+    print response["imageList"]
     return render(request, 'base/home.html', response)
 
 def login_user(request):

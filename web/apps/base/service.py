@@ -85,3 +85,31 @@ def handle_upload_images(request):
 			return {"message" : Message.UPLOAD_IMAGES_FORM_ERROR, "isLogged" : isLogged, "form" : form}
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "form" : form}
+
+def handle_list_images(request):
+
+	DEFAULT_LIMIT = 10
+
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+
+	imageList = []
+
+	if request.POST:
+		condition = request.POST["condition"]
+		limit = request.POST["limit"]
+		images = Image.objects.all()
+		import random
+		import math
+		random.shuffle(images)
+		imageList = images[:math.min(limit, len(images))]
+	else:
+		limit = DEFAULT_LIMIT
+		images = list(Image.objects.all())
+		import random
+		random.shuffle(images)
+		imageList = images[:min(limit, len(images))]
+		
+	return {"message" : Message.SUCCESS, "isLogged" : isLogged, "imageList" : imageList}

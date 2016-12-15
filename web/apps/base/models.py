@@ -16,4 +16,4 @@ class Image(models.Model):
 		upload_to = upload_path_handler)
 
 	def __unicode__(self):
-		return self.author
+		return self.file.url

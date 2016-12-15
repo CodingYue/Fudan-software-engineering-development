@@ -2,4 +2,9 @@
 
 {% block content %}
     <p>Welcome, start editing this template in <code>apps/base/templates/base/home.html</code></p>
+
+    {% for image in imageList %}
+    	<img src="{{image.file.url}}"><br/>
+    {% endfor %}
+
 {% endblock %}
