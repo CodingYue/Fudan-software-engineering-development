@@ -2,3 +2,9 @@
 body {
     padding-top: 70px;
 }
+.button-top-buffer {
+    padding-top: 15px;
+}
+.image-top-buffer {
+    padding-top: 50px;
+}

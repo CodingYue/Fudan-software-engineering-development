@@ -3,7 +3,19 @@
 {% block content %}
 
     {% for image in imageList %}
-    	<img src="{{image.file.url}}"><br/>
+        <div class="image-top-buffer">
+            <div>
+                <img src="{{image.file.url}}" class="img-responsive img-rounded">
+            </div>
+            <div class="row button-top-buffer">
+                <div class="col-sm-1">
+                    <a class="btn btn-default glyphicon glyphicon-hand-up"></a>
+                </div>
+                <div class="col-sm-offset-11">
+                    <a class="btn btn-default" href="{{image.file.url}}" download>Download</a>
+                </div>
+            </div>
+        </div>
     {% endfor %}
 
 {% endblock %}

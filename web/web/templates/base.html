@@ -37,7 +37,6 @@
             <button type="submit" class="btn btn-default">Go</button>
         </form>
         <ul class="nav navbar-nav navbar-right">
-                <!-- <li><a href="admin">ADMIN</a></li> -->
                 {% if isLogged == False %}
                     <button type="button" class="btn btn-primary navbar-btn" onClick="location.href='/login'">Login</button>
                     <button type="button" class="btn btn-success navbar-btn" onClick="location.href='/registration'">Join</button>
@@ -55,17 +54,17 @@
           <p class="pull-right visible-xs">
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
           </p>
+          {% block allthing %}
           <div class="jumbotron">
               <center>
                 <h1>Photos</h1>
                 <p>For the high-resolution photos.</p>
               </center>
           </div>
-          <div class="row">
             {% block content %}
 
             {% endblock %}
-          </div><!--/row-->
+          {% endblock %}
         </div><!--/.col-xs-12.col-sm-9-->
   </div>
 
