@@ -1,36 +1,39 @@
+{% load static %}
 
-{% extends 'base.html' %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <meta name="author" content="{% block meta_author %}{% endblock %}">
 
-<div class="container" align="center">
+    <title>{% block page_title %}Photos{% endblock %}</title>
 
-    <br/><br/><br/><br/><br/><br/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/signin.css' %}"/>
 
-        <div style="text-align: left; padding-left: 3%; width: 400px;"> <!-- Log in zone -->
-        <form class="form-inline" name="LoginForm" action="login" method="post">
-        {% csrf_token %}
+  </head>
 
-            {% if next %}
-            <input type="hidden" name="next" value="{{ next }}" />
-            {% endif %}
+  <body>
 
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Login</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="form-group has-success">
-                        <input type="text" id="username" name="username" placeholder="Username" class="form-control"><br/><br/>
-                        <input type="password" name="password" id="password" placeholder="Password" class="form-control"><br/><br/>
-                        <button type="submit" class="btn btn-success btn-xs">Login</button><br/><br/>
-                    </div>
-                    <h5 class="text-info">{{ message }}</h5>
-                </div>
-            </div>
+    <div class="container">
 
-        </form>
+      <form class="form-signin" name="LoginForm" action="login" method="post">
+          {% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
         </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
 
-</div>
+    </div> <!-- /container -->
 
-{% endblock %}
+  </body>
+</html>

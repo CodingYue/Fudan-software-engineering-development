@@ -5,8 +5,7 @@
 
 ## Project
 local_settings.py
-public/static
-public/media
+web/public/media
 
 ## SQLite3
 *.sqlite3
