@@ -79,7 +79,8 @@ def handle_upload_images(request):
 				newImage = Image(
 					file = f,
 					author = request.user.username,
-					description = request.POST['description'])
+					description = request.POST['description'],
+					likenumber = 1)
 				newImage.save()
 			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
                     "username" : request.user.username}

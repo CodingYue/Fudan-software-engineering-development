@@ -9,13 +9,31 @@
             </div>
             <div class="row button-top-buffer">
                 <div class="col-sm-1">
-                    <a class="btn btn-default glyphicon glyphicon-heart"></a>
+                    <button id="like-button{{ image.file.url }}" class="btn btn-default" onclick="likeOrunlike(this)">
+                        <span id="like-icon" class="glyphicon glyphicon-heart-empty"></span>
+                        {{ image.likenumber }}
+                    </button>
                 </div>
                 <div class="col-sm-offset-11">
-                    <a class="btn btn-default" href="{{image.file.url}}" download>Download</a>
+                    <a class="btn btn-default" href="{{image.file.url}}" role="button" download>Download</a>
                 </div>
             </div>
         </div>
     {% endfor %}
+    <script>
+        function likeOrunlike(input) {
+            var span = document.getElementById(input.id).getElementsByTagName('span');
+            var likenum = parseInt($(input).text());
+            if ($(span).attr('class') == "glyphicon glyphicon-heart-empty") {
+                $(span).removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
+                var strNewString = $(input).html().replace(likenum, likenum+1);
+                $(input).html(strNewString);
+            } else {
+                $(span).removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
+                var strNewString = $(input).html().replace(likenum, likenum-1);
+                $(input).html(strNewString);
+            }
+        }
+    </script>
 
 {% endblock %}
