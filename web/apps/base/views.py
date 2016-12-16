@@ -1,6 +1,7 @@
 """Views for the base app"""
 
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
 from .message import Message
 import service
 
@@ -29,4 +30,7 @@ def registration_user(request):
 
 def upload_images(request):
 	response = service.handle_upload_images(request)
-	return render(request, 'simulation/upload_images.html', response)
+	if response["message"] == Message.SUCCESS:
+		return HttpResponseRedirect('/')
+	else:
+		return render(request, 'simulation/upload_images.html', response)
