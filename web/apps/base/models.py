@@ -12,9 +12,17 @@ def upload_path_handler(instance, filename):
 class Image(models.Model):
 	author = models.CharField(max_length=100)
 	description = models.CharField(max_length=5000)
-	likenumber = models.IntegerField(default=0)
+	likeNumber = models.IntegerField(default=0)
 	file = models.FileField(
 		upload_to = upload_path_handler)
 
 	def __unicode__(self):
 		return self.file.url
+
+class UserImageAffiliation(models.Model):
+	username = models.CharField(max_length=100)
+	imageUrl = models.CharField(max_length=100)
+	enable = models.BooleanField(default=False)
+
+	def __unicode__(self):
+		return "User %s, ImageUrl %s, enable %s" % (user, imageUrl, str(enable))

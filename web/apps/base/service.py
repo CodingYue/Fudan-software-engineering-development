@@ -2,9 +2,20 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.utils.html import escape
+from django import template
 from .forms import UploadImageForm
-from .models import Image
+from .models import Image, UserImageAffiliation
 from .message import Message
+
+def get_user_image_affiliation(username, imageUrl):
+
+	try:
+		instance = UserImageAffiliation.objects.get(username = username, imageUrl = imageUrl)
+	except UserImageAffiliation.DoesNotExist:
+		instance = UserImageAffiliation(username = username, imageUrl = imageUrl)
+
+	#print username, imageUrl, instance.enable
+	return instance
 
 def handle_authenticate(request):
 	if request.user.is_authenticated():
@@ -80,7 +91,7 @@ def handle_upload_images(request):
 					file = f,
 					author = request.user.username,
 					description = request.POST['description'],
-					likenumber = 1)
+					likeNumber = 0)
 				newImage.save()
 			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
                     "username" : request.user.username}
@@ -117,5 +128,31 @@ def handle_list_images(request):
 		random.shuffle(images)
 		imageList = images[:min(limit, len(images))]
 
+
 	return {"message" : Message.SUCCESS, "isLogged" : isLogged, "imageList" : imageList,
             "username" : request.user.username}
+
+def handle_click_like(request):
+	if request.user.is_authenticated():
+		if request.method == 'POST':
+			username = request.user.username
+			imageUrl = request.POST['imageUrl']
+			image = Image.objects.get(file = imageUrl)
+			userImageAffiliation = get_user_image_affiliation(username, imageUrl)
+			if userImageAffiliation.enable:
+				print "from enable to disable"
+				image.likeNumber -= 1
+				userImageAffiliation.enable = False
+			else:
+				print "from disable to enable"
+				image.likeNumber += 1
+				userImageAffiliation.enable = True
+			image.save()
+			userImageAffiliation.save()
+			return {"message" : Message.SUCCESS, "isLogged" : True, "username" : request.user.username}
+		else:
+			print "Bad"
+			return {"message" : Message.POST_NOT_FOUND, "isLogged" : True, "username" : request.user.username}
+
+	else:
+		return {"message" : Message.USER_NOT_LOGGED_IN, "isLogged" : False, "username" : request.user.username};

@@ -1,17 +1,24 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% load get_user_image_affiliation %} 
 
-    {% for image in imageList %}
+{% block content %}
+    
+    {% for image in imageList%}
         <div class="image-top-buffer">
             <div>
                 <img src="{{image.file.url}}" class="img-responsive img-rounded">
             </div>
             <div class="row button-top-buffer">
                 <div class="col-sm-1">
-                    <button id="like-button{{ image.file.url }}" class="btn btn-default" onclick="likeOrunlike(this)">
+                    <button id="like-button{{ image.file.url }}" class="btn btn-default" name = "{{image.file}}" onclick="likeOrunlike(this)">
+                    {% get_user_image_affiliation username image.file as enable %}
+                    {% if not enable %}
                         <span id="like-icon" class="glyphicon glyphicon-heart-empty"></span>
-                        {{ image.likenumber }}
+                    {% else %}
+                        <span id="like-icon" class="glyphicon glyphicon-heart"></span>
+                    {% endif %}
+                        {{ image.likeNumber }}
                     </button>
                 </div>
                 <div class="col-sm-offset-11">
@@ -22,17 +29,26 @@
     {% endfor %}
     <script>
         function likeOrunlike(input) {
-            var span = document.getElementById(input.id).getElementsByTagName('span');
-            var likenum = parseInt($(input).text());
-            if ($(span).attr('class') == "glyphicon glyphicon-heart-empty") {
-                $(span).removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-                var strNewString = $(input).html().replace(likenum, likenum+1);
-                $(input).html(strNewString);
-            } else {
-                $(span).removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-                var strNewString = $(input).html().replace(likenum, likenum-1);
-                $(input).html(strNewString);
-            }
+            $.ajax({
+                type:"POST",
+                url:"/click_like",
+                data : {
+                    imageUrl : input.name
+                },
+                success: function() {
+                    var span = document.getElementById(input.id).getElementsByTagName('span');
+                    var likenum = parseInt($(input).text());
+                    if ($(span).attr('class') == "glyphicon glyphicon-heart-empty") {
+                        $(span).removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
+                        var strNewString = $(input).html().replace(likenum, likenum+1);
+                        $(input).html(strNewString);
+                    } else {
+                        $(span).removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
+                        var strNewString = $(input).html().replace(likenum, likenum-1);
+                        $(input).html(strNewString);
+                    }
+                }
+            });
         }
     </script>
 

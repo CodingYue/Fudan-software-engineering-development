@@ -1,9 +1,12 @@
 """Views for the base app"""
 
+from django import template
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
 from .message import Message
 import service
+
 
 def home(request):
     response = service.handle_list_images(request)
@@ -34,3 +37,11 @@ def upload_images(request):
 		return HttpResponseRedirect('/')
 	else:
 		return render(request, 'simulation/upload_images.html', response)
+
+@csrf_exempt
+def click_like(request):
+	response = service.handle_click_like(request)
+	if response["message"] == Message.SUCCESS:
+		return HttpResponse()
+	else:
+		return HttpResponseNotFound()
