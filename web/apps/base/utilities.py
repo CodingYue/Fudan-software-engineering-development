@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
     This file contains useful function for image tagging,　categorizing and searching
 """
