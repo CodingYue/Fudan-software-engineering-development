@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load get_user_image_affiliation %} 
+
+{% block allthing %}
+
+    <div class="jumbotron">
+        <center>
+            <h1>Search: </h1>
+            {% if not drawsearch %}
+                <h3>{{ search_request }}</h3>
+            {% else %}
+                <div>
+                    <img src="{{search_image.file.url}}" class="img-responsive img-rounded">
+                </div>
+            {% endif %}
+            <p>For the top {{ photos_number }} photos.</p>
+        </center>
+    </div>
+    
+    {% for image in imageList%}
+        <div class="image-top-buffer">
+            <div>
+                <img src="{{image.file.url}}" class="img-responsive img-rounded">
+            </div>
+            <div class="row button-top-buffer">
+                <div class="col-sm-1">
+                    <button id="like-button{{ image.file.url }}" class="btn btn-default" name = "{{image.file}}" onclick="likeOrunlike(this)">
+                    {% get_user_image_affiliation username image.file as enable %}
+                    {% if not enable %}
+                        <span id="like-icon" class="glyphicon glyphicon-heart-empty"></span>
+                    {% else %}
+                        <span id="like-icon" class="glyphicon glyphicon-heart"></span>
+                    {% endif %}
+                        {{ image.likeNumber }}
+                    </button>
+                </div>
+                <div class="col-sm-offset-11">
+                    <a class="btn btn-default" href="{{image.file.url}}" role="button" download>Download</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <script>
+        function likeOrunlike(input) {
+            $.ajax({
+                type:"POST",
+                url:"/click_like",
+                data : {
+                    imageUrl : input.name
+                },
+                success: function() {
+                    var span = document.getElementById(input.id).getElementsByTagName('span');
+                    var likenum = parseInt($(input).text());
+                    if ($(span).attr('class') == "glyphicon glyphicon-heart-empty") {
+                        $(span).removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
+                        var strNewString = $(input).html().replace(likenum, likenum+1);
+                        $(input).html(strNewString);
+                    } else {
+                        $(span).removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
+                        var strNewString = $(input).html().replace(likenum, likenum-1);
+                        $(input).html(strNewString);
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

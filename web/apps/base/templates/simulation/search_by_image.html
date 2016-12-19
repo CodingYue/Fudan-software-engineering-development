@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load get_user_image_affiliation %} 
+
+{% block head %}
+    <script src="{% static 'js/draw.js' %}"></script>
+    <script type="text/javascript">
+        window.onload = init;
+    </script>
+{% endblock %}
+
+{% block allthing %}
+
+
+    <div class="jumbotron">
+        <center>
+            <h1>Draw here: </h1>
+        </center>
+    </div>
+    
+    <center>
+        <canvas id="can" width="600" height="400" style="border:2px solid;"></canvas>
+
+        <div class="row button-top-buffer">
+            <div style="">Choose Color</div>
+            <div style="width:10px;height:10px;background:green;" id="green" onclick="color(this)"></div>
+            <div style="width:10px;height:10px;background:blue;" id="blue" onclick="color(this)"></div>
+            <div style="width:10px;height:10px;background:red;" id="red" onclick="color(this)"></div>
+            <div style="width:10px;height:10px;background:yellow;" id="yellow" onclick="color(this)"></div>
+            <div style="width:10px;height:10px;background:orange;" id="orange" onclick="color(this)"></div>
+            <div style="width:10px;height:10px;background:black;" id="black" onclick="color(this)"></div>
+        </div>
+
+        <div class="row button-top-buffer">
+            <div style="">Eraser</div>
+            <div style="width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div>
+        </div>
+
+        <div class="row button-top-buffer">
+            <input type="button" class="btn btn-success" value="Submit" id="btn" onclick="submit()">
+            <input type="button" class="btn btn-danger" value="Clear" id="clr" onclick="erase()">
+        </div>
+    </center>
+{% endblock %}
