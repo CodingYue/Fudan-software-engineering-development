@@ -5,11 +5,12 @@ from django.forms import Form, ImageField
 from taggit.managers import TaggableManager
 
 
-def upload_path_handler(instance, filename, category):
+def upload_path_handler(instance, filename, category = ''):
 	import os.path
 	import time
 	fn, ext = os.path.splitext(filename)
-	return "images/{category}/{id}{ext}".format(category=category, id=int(time.time() * 1000), ext=ext)
+	# return "images/{category}/{id}{ext}".format(category=category, id=int(time.time() * 1000), ext=ext)
+	return "images/{id}{ext}".format(id=int(time.time() * 1000), ext=ext)
 
 
 class Image(models.Model):
