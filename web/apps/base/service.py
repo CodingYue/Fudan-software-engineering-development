@@ -3,9 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.utils.html import escape
 from django import template
-from .forms import UploadImageForm
+from .forms import UploadImageForm, ImageForm
 from .models import Image, UserImageAffiliation
 from .message import Message
+import utilities
 
 def get_user_image_affiliation(username, imageUrl):
 
@@ -70,6 +71,73 @@ def handle_registration(request):
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : False, "username" : request.user.username}
 
+"""
+	for new upload
+	upload single image
+	tag and category are returned as response
+"""
+def handle_add_image(request):
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+
+	if not isLogged:
+		return {"message": Message.USER_NOT_LOGGED_IN, "isLogged": False, "username": request.user.username}
+	form = ImageForm()
+	if request.method == 'POST':
+		form = ImageForm(request.POST, request.FILES)
+		if form.is_valid():
+			image = request.FILES.getlist('file')[0]
+			img_aid = utilities.upload_image(image)
+			category = utilities.category(image, img_id = img_aid)
+			tags = utilities.tag(image, img_id = img_aid)
+			return {"message": Message.SUCCESS, "isLogged": isLogged, "form": form, "username": request.user.username, "category": category, "tags": tags}
+		else:
+			return {"message": Message.UPLOAD_IMAGES_FORM_ERROR, "isLogged": isLogged, "form": form, "username": request.user.username}
+	else:
+		return {"message": Message.POST_NOT_FOUND, "isLogged": isLogged, "form": form, "username": request.user.username}
+
+"""
+	for new upload
+	add image description
+"""
+def handle_upload_images(request):
+
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+
+	if not isLogged:
+		return {"message" : Message.USER_NOT_LOGGED_IN, "isLogged" : False, "username" : request.user.username}
+
+	form = ImageDetailedForm()
+
+	if request.POST:
+		form = ImageDetailedForm(request.POST, request.FILES)
+		if form.is_valid():
+			files = request.FILES.getlist('file')
+			for f in files:
+				newImage = Image(
+					file = f,
+					author = request.user.username,
+					description = request.POST['description'],
+					category = request.POST['category'],
+					tags = request.POST['tags'],
+					likeNumber = 0)
+				newImage.save()
+			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
+                    "username" : request.user.username}
+		else:
+			return {"message" : Message.UPLOAD_IMAGES_FORM_ERROR, "isLogged" : isLogged, "form" : form, "username" : request.user.username}
+	else:
+		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "form" : form,
+                "username" : request.user.username}
+
+"""
+	for old upload
+"""
 def handle_upload_images(request):
 
 	if request.user.is_authenticated():
