@@ -252,7 +252,7 @@ def handle_search_by_image(request):
 				if image.file.url == imageUrl:
 					imageList.append(image)
 		print imageList
-		return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : True, "search_request" : "", "photos_number" : DEFAULT_LIMIT, "imageList" : imageList,
+		return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : True, "search_image" : filename.replace("public", ""), "photos_number" : DEFAULT_LIMIT, "imageList" : imageList,
 				"username" : request.user.username} 
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "drawsearch" : True, "search_request" : "", "photos_number" : DEFAULT_LIMIT,
