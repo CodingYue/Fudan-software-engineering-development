@@ -6,6 +6,9 @@ from django import template
 from .forms import UploadImageForm
 from .models import Image, UserImageAffiliation
 from .message import Message
+import utilities
+import os
+import time
 
 def get_user_image_affiliation(username, imageUrl):
 
@@ -156,3 +159,34 @@ def handle_click_like(request):
 
 	else:
 		return {"message" : Message.USER_NOT_LOGGED_IN, "isLogged" : False, "username" : request.user.username};
+
+def handle_search_by_image(request):
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+	DEFAULT_LIMIT = 10
+	print "search by images..."
+	if request.POST:
+		imgData = request.POST["imageData"]
+		filename = "public/media/canvas/{id}.jpg".format(id=int(time.time()*1000))
+		with open(filename, "wb") as f:
+			f.write(imgData.decode('base64'))
+			print "success"
+			f.close()
+
+		ans = utilities.search_by_image(filename, "public/media/images", DEFAULT_LIMIT)
+		
+		imageList = []
+		for item in ans:
+			imageUrl = item[0].replace("public", "")
+			images = Image.objects.all()
+			for image in images:
+				if image.file.url == imageUrl:
+					imageList.append(image)
+		print imageList
+		return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : True, "search_request" : "", "photos_number" : DEFAULT_LIMIT, "imageList" : imageList,
+				"username" : request.user.username} 
+	else:
+		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "drawsearch" : True, "search_request" : "", "photos_number" : DEFAULT_LIMIT,
+				"username" : request.user.username} 

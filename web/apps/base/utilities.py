@@ -116,13 +116,18 @@ def caculate_dif(im1, im2):
     the items in this list is limited to result_num
 """
 def search_by_image(img_path, category_path, result_num = 10):
+    print "now in searching process"
     results = []
     im1 = Image.open(img_path).resize((16, 16))\
         .convert("RGBA")
+    print category_path
     for lists in os.listdir(category_path):
         f = os.path.join(category_path, lists)
-        im2 = Image.open(f).resize((16, 16))\
-            .convert("RGBA")
-        results.append((f, caculate_dif(im1, im2)))
+        fn, ext = os.path.splitext(f)
+        if ext == '.jpg' or ext == '.JPG' or ext == '.jpeg' or ext == '.JPEG':
+            im2 = Image.open(f).resize((16, 16))\
+                .convert("RGBA")
+            results.append((f, caculate_dif(im1, im2)))
     results = sorted(results, key=lambda item: item[1])
-    return results[:result_num]
+    print results
+    return results[:min(result_num, len(results))]

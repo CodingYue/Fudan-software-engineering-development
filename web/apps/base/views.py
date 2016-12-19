@@ -39,6 +39,17 @@ def upload_images(request):
 		return render(request, 'simulation/upload_images.html', response)
 
 @csrf_exempt
+def search_by_image(request):
+	response = service.handle_search_by_image(request)
+	if response["message"] == Message.SUCCESS:
+		return render(request, 'simulation/search.html', response)
+	else:
+		return render(request, 'simulation/search_by_image.html', response)
+
+def search(request):
+	pass
+
+@csrf_exempt
 def click_like(request):
 	response = service.handle_click_like(request)
 	if response["message"] == Message.SUCCESS:
