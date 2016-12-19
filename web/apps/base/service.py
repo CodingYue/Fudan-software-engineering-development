@@ -120,15 +120,17 @@ def handle_add_image_description(request):
 		form = ImageDetailedForm(request.POST, request.FILES)
 		if form.is_valid():
 			files = request.FILES.getlist('file')
+			tags = form.cleaned_data['tags']
 			for f in files:
 				newImage = Image(
 					file = f,
 					author = request.user.username,
 					description = request.POST['description'],
 					category = request.POST['category'],
-					tags = request.POST['tags'],
 					likeNumber = 0)
 				newImage.save()
+				for t in tags:
+					newImage.tags.add(t)
 			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
                     "username" : request.user.username}
 		else:
@@ -156,13 +158,17 @@ def handle_upload_images(request):
 		form = UploadImageForm(request.POST, request.FILES)
 		if form.is_valid():
 			files = request.FILES.getlist('file')
+			tags = form.cleaned_data['tags']
 			for f in files:
 				newImage = Image(
 					file = f,
 					author = request.user.username,
 					description = request.POST['description'],
+					category = request.POST['category'],
 					likeNumber = 0)
 				newImage.save()
+				for t in tags:
+					newImage.tags.add(t)
 			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
                     "username" : request.user.username}
 		else:
@@ -171,6 +177,27 @@ def handle_upload_images(request):
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "form" : form,
                 "username" : request.user.username}
+
+def handle_search_images(request):
+
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+	imageList = []
+	if 'q' in request.GET:
+		querys = request.GET['q'].split()
+		if 'category' in request.GET:
+			category = request.GET['category']
+			imageList = Image.objects.filter(tags__name__in = querys, category = category).distinct().order_by('likeNumber')
+		else:
+			imageList = Image.objects.filter(tags__name__in = querys).distinct().order_by('likeNumber')
+
+		for i in Image.objects.all():
+			print i.__dict__
+
+	return {"message" : Message.SUCCESS, "isLogged" : isLogged, "imageList" : imageList,   "username" : request.user.username}
+
 
 def handle_list_images(request):
 

@@ -8,9 +8,14 @@ import service
 
 
 def home(request):
-    response = service.handle_list_images(request)
-    print response["imageList"]
-    return render(request, 'base/home.html', response)
+	response = service.handle_list_images(request)
+	print response["imageList"]
+	return render(request, 'base/home.html', response)
+
+def search(request):
+	response = service.handle_search_images(request)
+	print response["imageList"]
+	return render(request, 'base/home.html', response)
 
 def login_user(request):
 	response = service.handle_login(request)
