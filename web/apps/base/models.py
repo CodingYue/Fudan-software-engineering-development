@@ -9,8 +9,10 @@ def upload_path_handler(instance, filename, category = ''):
 	import os.path
 	import time
 	fn, ext = os.path.splitext(filename)
-	# return "images/{category}/{id}{ext}".format(category=category, id=int(time.time() * 1000), ext=ext)
-	return "images/{id}{ext}".format(id=int(time.time() * 1000), ext=ext)
+	if category:
+		return "images/{category}/{id}{ext}".format(category=category, id=int(time.time() * 1000), ext=ext)
+	else:
+		return "images/{id}{ext}".format(id=int(time.time() * 1000), ext=ext)
 
 
 class Image(models.Model):

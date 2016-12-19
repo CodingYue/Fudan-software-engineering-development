@@ -38,7 +38,7 @@ def registration_user(request):
 def add_image(request):
 	response = service.handle_add_image(request)
 	if response["message"] == Message.SUCCESS:
-		return render(request, 'simulation/add_description.html', response)
+		return render(request, 'simulation/add_image_description.html', response)
 	else:
 		return render(request, 'simulation/add_image.html', response)
 
@@ -47,7 +47,7 @@ def add_image(request):
 	new upload
 """
 def add_image_description(request):
-	response = service.handle_add_image(request)
+	response = service.handle_add_image_description(request)
 	if response["message"] == Message.SUCCESS:
 		return HttpResponseRedirect('/')
 	else:

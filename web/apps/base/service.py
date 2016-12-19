@@ -102,7 +102,7 @@ def handle_add_image(request):
 	for new upload
 	add image description
 """
-def handle_upload_images(request):
+def handle_add_image_description(request):
 
 	if request.user.is_authenticated():
 		isLogged = True
