@@ -27,45 +27,46 @@ path.append(os.path.join(PROJECT_ROOT, "libs"))
 SITE_ID = 1
 
 # https://docs.djangoproject.com/en/1.10/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # https://docs.djangoproject.com/en/1.10/ref/settings/#installed-apps
 INSTALLED_APPS = [
-    # Django apps
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.humanize',
-    'django.contrib.sitemaps',
-    'django.contrib.syndication',
-    'django.contrib.staticfiles',
+	# Django apps
+	'django.contrib.admin',
+	'django.contrib.admindocs',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.sites',
+	'django.contrib.messages',
+	'django.contrib.humanize',
+	'django.contrib.sitemaps',
+	'django.contrib.syndication',
+	'django.contrib.staticfiles',
 
-    # Third party apps
-    'compressor',
+	# Third party apps
+	'compressor',
+	'taggit',
 
-    # Local apps
-    'base',
+	# Local apps
+	'base',
 ]
 
 # https://docs.djangoproject.com/en/1.10/topics/auth/passwords/#using-argon2-with-django
 PASSWORD_HASHERS = (
-    #'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
+	#'django.contrib.auth.hashers.Argon2PasswordHasher',
+	'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+	'django.contrib.auth.hashers.BCryptPasswordHasher',
+	'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+	'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+	'django.contrib.auth.hashers.SHA1PasswordHasher',
+	'django.contrib.auth.hashers.MD5PasswordHasher',
+	'django.contrib.auth.hashers.CryptPasswordHasher',
 )
 
 # DEBUG SETTINGS
 # https://docs.djangoproject.com/en/1.10/ref/settings/#debug
-DEBUG = False
+DEBUG = True
 
 # https://docs.djangoproject.com/en/1.10/ref/settings/#internal-ips
 INTERNAL_IPS = ('127.0.0.1')
@@ -110,32 +111,32 @@ STATIC_URL = '/static/'
 # Additional locations of static files
 # https://docs.djangoproject.com/en/1.10/ref/settings/#staticfiles-dirs
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+	os.path.join(BASE_DIR, 'static'),
 )
 
 # https://docs.djangoproject.com/en/1.10/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+	'django.contrib.staticfiles.finders.FileSystemFinder',
+	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 # TEMPLATE SETTINGS
 # https://docs.djangoproject.com/en/1.10/ref/settings/#templates
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages'
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [os.path.join(BASE_DIR, 'templates')],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.contrib.auth.context_processors.auth',
+				'django.template.context_processors.debug',
+				'django.template.context_processors.request',
+				'django.contrib.auth.context_processors.auth',
+				'django.contrib.messages.context_processors.messages'
+			],
+		},
+	},
 ]
 
 
@@ -147,22 +148,22 @@ ROOT_URLCONF = 'web.urls'
 # MIDDLEWARE SETTINGS
 # See: https://docs.djangoproject.com/en/1.10/ref/settings/#middleware-classes
 MIDDLEWARE_CLASSES = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 # LOGGING
 # https://docs.djangoproject.com/en/1.10/topics/logging/
 LOGGING = {
-    'version': 1,
-    'loggers': {
-        'web': {
-            'level': "DEBUG"
-        }
-    }
+	'version': 1,
+	'loggers': {
+		'web': {
+			'level': "DEBUG"
+		}
+	}
 }
