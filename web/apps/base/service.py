@@ -78,7 +78,8 @@ def handle_registration(request):
 	upload single image
 	tag and category are returned as response
 """
-def handle_add_image(request):
+def handle_prepare_images(request):
+	print "Process in preparing images..."
 	if request.user.is_authenticated():
 		isLogged = True
 	else:
@@ -86,62 +87,23 @@ def handle_add_image(request):
 
 	if not isLogged:
 		return {"message": Message.USER_NOT_LOGGED_IN, "isLogged": False, "username": request.user.username}
-	form = ImageForm()
+
 	if request.method == 'POST':
-		form = ImageForm(request.POST, request.FILES)
-		if form.is_valid():
-			image = request.FILES.getlist('file')[0]
-			img_aid = utilities.upload_image(image)
-			category = utilities.category(image, img_id = img_aid)
-			tags = utilities.tag(image, img_id = img_aid)
-			return {"message": Message.SUCCESS, "isLogged": isLogged, "form": form, "username": request.user.username, "category": category, "tags": tags}
-		else:
-			return {"message": Message.UPLOAD_IMAGES_FORM_ERROR, "isLogged": isLogged, "form": form, "username": request.user.username}
+		print "Get the images..."
+		print request.POST
+		print request.FILES
+		files = request.FILES.getlist('file')
+		image = files[0]
+		img_aid = utilities.upload_image(image)
+		category = utilities.category(image, img_id = img_aid)
+		tags = utilities.tag(image, img_id = img_aid)
+		print category
+		print tags
+		return {"message": Message.SUCCESS, "isLogged": isLogged, "username": request.user.username, "category": category, "tags": tags}
 	else:
-		return {"message": Message.POST_NOT_FOUND, "isLogged": isLogged, "form": form, "username": request.user.username}
+		print "Don't get the images..."
+		return {"message": Message.POST_NOT_FOUND, "isLogged": isLogged, "username": request.user.username}
 
-"""
-	for new upload
-	add image description
-"""
-def handle_add_image_description(request):
-
-	if request.user.is_authenticated():
-		isLogged = True
-	else:
-		isLogged = False
-
-	if not isLogged:
-		return {"message" : Message.USER_NOT_LOGGED_IN, "isLogged" : False, "username" : request.user.username}
-
-	form = ImageDetailedForm()
-
-	if request.POST:
-		form = ImageDetailedForm(request.POST, request.FILES)
-		if form.is_valid():
-			files = request.FILES.getlist('file')
-			tags = form.cleaned_data['tags']
-			for f in files:
-				newImage = Image(
-					file = f,
-					author = request.user.username,
-					description = request.POST['description'],
-					category = request.POST['category'],
-					likeNumber = 0)
-				newImage.save()
-				for t in tags:
-					newImage.tags.add(t)
-			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
-                    "username" : request.user.username}
-		else:
-			return {"message" : Message.UPLOAD_IMAGES_FORM_ERROR, "isLogged" : isLogged, "form" : form, "username" : request.user.username}
-	else:
-		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "form" : form,
-                "username" : request.user.username}
-
-"""
-	for old upload
-"""
 def handle_upload_images(request):
 
 	if request.user.is_authenticated():
@@ -168,7 +130,9 @@ def handle_upload_images(request):
 					likeNumber = 0)
 				newImage.save()
 				for t in tags:
+					print t
 					newImage.tags.add(t)
+				newImage.save()
 			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
                     "username" : request.user.username}
 		else:
@@ -185,18 +149,15 @@ def handle_search_images(request):
 	else:
 		isLogged = False
 	imageList = []
-	if 'q' in request.GET:
-		querys = request.GET['q'].split()
-		if 'category' in request.GET:
-			category = request.GET['category']
-			imageList = Image.objects.filter(tags__name__in = querys, category = category).distinct().order_by('likeNumber')
-		else:
-			imageList = Image.objects.filter(tags__name__in = querys).distinct().order_by('likeNumber')
+	if request.POST:
+		querys = request.POST["q"].split(" ")
+		imageList = Image.objects.filter(tags__name__in = querys).distinct().order_by('likeNumber')
 
 		for i in Image.objects.all():
 			print i.__dict__
 
-	return {"message" : Message.SUCCESS, "isLogged" : isLogged, "imageList" : imageList,   "username" : request.user.username}
+	return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : False, "search_request" : request.POST["q"], "photos_number" : len(imageList), 
+			"imageList" : imageList, "username" : request.user.username}
 
 
 def handle_list_images(request):
@@ -279,7 +240,7 @@ def handle_search_by_image(request):
 				if image.file.url == imageUrl:
 					imageList.append(image)
 		print imageList
-		return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : True, "search_image" : filename.replace("public", ""), "photos_number" : DEFAULT_LIMIT, "imageList" : imageList,
+		return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : True, "search_image" : filename.replace("public", ""), "photos_number" : len(imageList), "imageList" : imageList,
 				"username" : request.user.username} 
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "drawsearch" : True, "search_request" : "", "photos_number" : DEFAULT_LIMIT,

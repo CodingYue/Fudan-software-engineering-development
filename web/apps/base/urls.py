@@ -14,6 +14,5 @@ urlpatterns = [
     url(r'^search_by_image$', views.search_by_image, name='search_by_image'),
     url(r'^search$', views.search, name='search'),
     url(r'^click_like$', views.click_like, name='click_like'),
-	url(r'^add_image$', views.add_image, name='add_images'),
-	url(r'^add_image_description$', views.add_image_description, name='add_image_description'),
+	url(r'^prepare_images$', views.prepare_images, name='prepare_images'),
 ]

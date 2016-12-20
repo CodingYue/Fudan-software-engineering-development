@@ -1,7 +1,7 @@
 """Views for the base app"""
 from django import template
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .message import Message
 import service
@@ -15,7 +15,8 @@ def home(request):
 def search(request):
 	response = service.handle_search_images(request)
 	print response["imageList"]
-	return render(request, 'base/home.html', response)
+	if response["message"] == Message.SUCCESS:
+		return render(request, 'simulation/search.html', response)
 
 def login_user(request):
 	response = service.handle_login(request)
@@ -76,6 +77,14 @@ def search_by_image(request):
 		return render(request, 'simulation/search.html', response)
 	else:
 		return render(request, 'simulation/search_by_image.html', response)
+
+@csrf_exempt
+def prepare_images(request):
+	response = service.handle_prepare_images(request)
+	if response["message"] == Message.SUCCESS:
+		return JsonResponse(response)
+	else:
+		return HttpResponseNotFound()
 
 @csrf_exempt
 def click_like(request):
