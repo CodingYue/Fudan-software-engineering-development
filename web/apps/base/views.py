@@ -77,9 +77,6 @@ def search_by_image(request):
 	else:
 		return render(request, 'simulation/search_by_image.html', response)
 
-def search(request):
-	pass
-
 @csrf_exempt
 def click_like(request):
 	response = service.handle_click_like(request)

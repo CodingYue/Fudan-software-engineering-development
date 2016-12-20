@@ -36,7 +36,7 @@
       </div>
 
       <div id="navbar" class="collapse navbar-collapse">
-        <form class="navbar-form navbar-left">
+        <form class="navbar-form navbar-left" action="search">
           <div class="form-group">
               <input type="text" class="form-control" placeholder="Search">
           </div>
@@ -53,7 +53,7 @@
                     <button type="button" class="btn btn-success navbar-btn" onClick="location.href='/registration'">Join</button>
                 {% else %}
                     <p class="navbar-text">{{ username }}</p>
-                    <button type="button" class="btn btn-info navbar-btn" onClick="location.href='/upload_images'">Submit Photos</button>
+                    <button type="button" class="btn btn-info navbar-btn" onClick="location.href='/add_image'">Submit Photos</button>
                     <button type="button" class="btn btn-danger navbar-btn" onClick="location.href='/logout'">Logout</button>
                 {% endif %}
         </ul>

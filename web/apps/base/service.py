@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.utils.html import escape
 from django import template
-from .forms import UploadImageForm, ImageForm
+from .forms import UploadImageForm, ImageForm, ImageDetailedForm
 from .models import Image, UserImageAffiliation
 from .message import Message
 import utilities

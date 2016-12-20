@@ -18,8 +18,8 @@ def upload_path_handler(instance, filename, category = ''):
 class Image(models.Model):
 	author = models.CharField(max_length=100)
 	description = models.CharField(max_length=5000, blank = True)
-	# category = models.CharField(max_length=100)
-	# tags = TaggableManager()
+	category = models.CharField(max_length=100)
+	tags = TaggableManager()
 	# likedby = models.ManyToManyField()
 	likeNumber = models.IntegerField(default=0)
 	file = models.FileField(

@@ -4,13 +4,13 @@
 
 <div class="container image-top-buffer" align="center">
 
-        <form class="form-inline" action="upload_images" method="post" enctype="multipart/form-data">
+        <form class="form-inline" action="add_image_description" method="post" enctype="multipart/form-data">
         {% csrf_token %}
             <div class="form-group has-success">
                 <input id="id_image" type="file" class="" name="file" onchange="readURL(this);"><br/><br/>
                 <textarea type="paragraph_text" id="description" name="description" placeholder="Description" class="form-control"  cols="50" rows="10"></textarea><br/><br/>
-                <textarea type="text" id="category" name="category" placeholder="category" class="form-control"></textarea><br/><br/>
-                <textarea type="text" id="tags" name="tags" placeholder="tags" class="form-control"  ></textarea><br/><br/>
+                <textarea type="text" id="category" name="category" placeholder="category" class="form-control">{{ category }}</textarea><br/><br/>
+                <textarea type="text" id="tags" name="tags" placeholder="tags" class="form-control" >{{ tags }}</textarea><br/><br/>
                 <button type="submit" class="btn btn-success">Upload</button><br/><br/>
             </div>
         </form>
