@@ -3,9 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.utils.html import escape
 from django import template
-from .forms import UploadImageForm
+from .forms import UploadImageForm, ImageForm, ImageDetailedForm
 from .models import Image, UserImageAffiliation
 from .message import Message
+import utilities
+import os
+import time
 
 def get_user_image_affiliation(username, imageUrl):
 
@@ -70,6 +73,37 @@ def handle_registration(request):
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : False, "username" : request.user.username}
 
+"""
+	for new upload
+	upload single image
+	tag and category are returned as response
+"""
+def handle_prepare_images(request):
+	print "Process in preparing images..."
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+
+	if not isLogged:
+		return {"message": Message.USER_NOT_LOGGED_IN, "isLogged": False, "username": request.user.username}
+
+	if request.method == 'POST':
+		print "Get the images..."
+		print request.POST
+		print request.FILES
+		files = request.FILES.getlist('file')
+		image = files[0]
+		img_aid = utilities.upload_image(image)
+		category = utilities.category(image, img_id = img_aid)
+		tags = utilities.tag(image, img_id = img_aid)
+		print category
+		print tags
+		return {"message": Message.SUCCESS, "isLogged": isLogged, "username": request.user.username, "category": category, "tags": tags}
+	else:
+		print "Don't get the images..."
+		return {"message": Message.POST_NOT_FOUND, "isLogged": isLogged, "username": request.user.username}
+
 def handle_upload_images(request):
 
 	if request.user.is_authenticated():
@@ -86,12 +120,18 @@ def handle_upload_images(request):
 		form = UploadImageForm(request.POST, request.FILES)
 		if form.is_valid():
 			files = request.FILES.getlist('file')
+			tags = form.cleaned_data['tags']
 			for f in files:
 				newImage = Image(
 					file = f,
 					author = request.user.username,
 					description = request.POST['description'],
+					category = request.POST['category'],
 					likeNumber = 0)
+				newImage.save()
+				for t in tags:
+					print t
+					newImage.tags.add(t)
 				newImage.save()
 			return {"message" : Message.SUCCESS, "isLogged" : isLogged, "form" : form,
                     "username" : request.user.username}
@@ -101,6 +141,24 @@ def handle_upload_images(request):
 	else:
 		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "form" : form,
                 "username" : request.user.username}
+
+def handle_search_images(request):
+
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+	imageList = []
+	if request.POST:
+		querys = request.POST["q"].split(" ")
+		imageList = Image.objects.filter(tags__name__in = querys).distinct().order_by('likeNumber')
+
+		for i in Image.objects.all():
+			print i.__dict__
+
+	return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : False, "search_request" : request.POST["q"], "photos_number" : len(imageList), 
+			"imageList" : imageList, "username" : request.user.username}
+
 
 def handle_list_images(request):
 
@@ -156,3 +214,35 @@ def handle_click_like(request):
 
 	else:
 		return {"message" : Message.USER_NOT_LOGGED_IN, "isLogged" : False, "username" : request.user.username};
+
+def handle_search_by_image(request):
+	if request.user.is_authenticated():
+		isLogged = True
+	else:
+		isLogged = False
+	DEFAULT_LIMIT = 10
+	print "search by images..."
+	if request.POST:
+		imgData = request.POST["imageData"]
+		filename = "public/media/canvas/{id}.jpg".format(id=int(time.time()*1000))
+		with open(filename, "wb") as f:
+			f.write(imgData.decode('base64'))
+			print "success"
+			f.close()
+
+		ans = utilities.search_by_image(filename, "public/media/images", DEFAULT_LIMIT)
+		
+		imageList = []
+		for item in ans:
+			imageUrl = item[0].replace("public", "")
+			images = Image.objects.all()
+			for image in images:
+				if image.file.url == imageUrl:
+					imageList.append(image)
+		print imageList
+		return {"message" : Message.SUCCESS, "isLogged" : isLogged, "drawsearch" : True, "search_image" : filename.replace("public", ""), "photos_number" : len(imageList), "imageList" : imageList,
+				"username" : request.user.username} 
+	else:
+		return {"message" : Message.POST_NOT_FOUND, "isLogged" : isLogged, "drawsearch" : True, "search_request" : "", "photos_number" : DEFAULT_LIMIT,
+				"username" : request.user.username} 
+

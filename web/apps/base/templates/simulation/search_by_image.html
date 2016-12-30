@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load get_user_image_affiliation %} 
+
+{% block head %}
+    <script src="{% static 'js/draw.js' %}"></script>
+    <script type="text/javascript">
+        window.onload = init;
+    </script>
+{% endblock %}
+
+{% block allthing %}
+
+
+    <div class="jumbotron">
+        <center>
+            <h1>Draw here: </h1>
+        </center>
+    </div>
+    
+    <center>
+        <canvas id="can" width="600" height="400" style="border:2px solid;"></canvas>
+        
+        <div class="row button-top-buffer">
+            <input type="button" class="btn btn-success" value="Submit" id="btn" onclick="submit()">
+            <input type="button" class="btn btn-danger" value="Clear" id="clr" onclick="erase()">
+        </div>
+    </center>
+{% endblock %}

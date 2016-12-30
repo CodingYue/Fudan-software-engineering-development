@@ -4,12 +4,13 @@
 
 <div class="container image-top-buffer" align="center">
 
-        <form class="form-inline" action="upload_images" method="post" enctype="multipart/form-data">
+        <form id="form" class="form-inline" action="upload_images" method="post" enctype="multipart/form-data">
         {% csrf_token %}
             <div class="form-group has-success">
                 <input id="id_image" type="file" class="" name="file" onchange="readURL(this);"><br/><br/>
                 <textarea type="paragraph_text" id="description" name="description" placeholder="Description" class="form-control"  cols="50" rows="10"></textarea><br/><br/>
-
+                <textarea type="text" id="category" name="category" placeholder="category" class="form-control"></textarea><br/><br/>
+                <textarea type="text" id="tags" name="tags" placeholder="tags" class="form-control"></textarea><br/><br/>
                 <button type="submit" class="btn btn-success">Upload</button><br/><br/>
             </div>
         </form>
@@ -29,6 +30,26 @@
                     };
 
                     reader.readAsDataURL(input.files[0]);
+
+                    var myFormData = new FormData($("#form")[0]);
+                    console.log(myFormData);
+                    console.log(myFormData.get('file'));
+
+                    $.ajax({
+                        type:"POST",
+                        url:"/prepare_images",
+                        processData: false, // important
+                        contentType: false,
+                        data : myFormData,
+                        success: function(response) {
+                            console.log("response: " + response);
+                            document.getElementById("category").innerHTML = response.category;
+                            document.getElementById("tags").innerHTML = response.tags;
+                        },
+                        error: function(e){
+                           console.log(e)
+                        }
+                    });
                 }
             }
         </script>
